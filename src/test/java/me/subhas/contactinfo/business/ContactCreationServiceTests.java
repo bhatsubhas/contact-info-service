@@ -46,10 +46,10 @@ class ContactCreationServiceTests {
 
         ContactCreate contactCreate = new ContactCreate(name, email, phone);
         ContactResponse response = contactInfoService.createContact(contactCreate);
-        assertEquals(contact.getId(), response.getId());
-        assertEquals(contactCreate.getName(), response.getName());
-        assertEquals(contactCreate.getEmail(), response.getEmail());
-        assertEquals(contactCreate.getPhone(), response.getPhone());
+        assertEquals(contact.getId(), response.id());
+        assertEquals(contactCreate.name(), response.name());
+        assertEquals(contactCreate.email(), response.email());
+        assertEquals(contactCreate.phone(), response.phone());
 
         verify(contactRepository).findByName(name);
         verify(contactRepository).save(any(Contact.class));

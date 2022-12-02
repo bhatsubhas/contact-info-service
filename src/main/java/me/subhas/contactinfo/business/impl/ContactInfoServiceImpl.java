@@ -24,7 +24,7 @@ public class ContactInfoServiceImpl implements ContactInfoService {
 
     @Override
     public ContactResponse createContact(ContactCreate contactCreate) {
-        String name = contactCreate.getName();
+        String name = contactCreate.name();
         Optional<Contact> existingContact = contactRepository.findByName(name);
         if (existingContact.isPresent()) {
             throw new DuplicateContactNameException(

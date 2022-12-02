@@ -34,7 +34,7 @@ class ListContactsServiceTests {
     void testReturnsEmptyArray() {
         when(contactRepository.findAll()).thenReturn(List.of());
         ContactListResponse contacts = contactInfoService.listContacts();
-        assertEquals(0, contacts.getContacts().size());
+        assertEquals(0, contacts.contacts().size());
         verify(contactRepository).findAll();
     }
 
@@ -51,12 +51,12 @@ class ListContactsServiceTests {
 
         when(contactRepository.findAll()).thenReturn(contacts);
         ContactListResponse contactListResponse = contactInfoService.listContacts();
-        assertEquals(5, contactListResponse.getContacts().size());
-        for (ContactResponse contactResponse : contactListResponse.getContacts()) {
-            Contact contact = contacts.get(contactResponse.getId().intValue() - 1);
-            assertEquals(contact.getName(), contactResponse.getName());
-            assertEquals(contact.getEmail(), contactResponse.getEmail());
-            assertEquals(contact.getPhone(), contactResponse.getPhone());
+        assertEquals(5, contactListResponse.contacts().size());
+        for (ContactResponse contactResponse : contactListResponse.contacts()) {
+            Contact contact = contacts.get(contactResponse.id().intValue() - 1);
+            assertEquals(contact.getName(), contactResponse.name());
+            assertEquals(contact.getEmail(), contactResponse.email());
+            assertEquals(contact.getPhone(), contactResponse.phone());
         }
         verify(contactRepository).findAll();
     }
