@@ -1,5 +1,6 @@
 package me.subhas.contactinfo.business.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Service;
 import me.subhas.contactinfo.business.ContactInfoService;
 import me.subhas.contactinfo.business.exception.DuplicateContactNameException;
 import me.subhas.contactinfo.business.model.ContactCreate;
+import me.subhas.contactinfo.business.model.ContactListResponse;
 import me.subhas.contactinfo.business.model.ContactResponse;
 import me.subhas.contactinfo.data.ContactRepository;
 import me.subhas.contactinfo.data.entity.Contact;
@@ -30,6 +32,13 @@ public class ContactInfoServiceImpl implements ContactInfoService {
         }
         Contact contact = contactRepository.save(contactCreate.toContactEntity());
         return new ContactResponse(contact);
+    }
+
+    @Override
+    public ContactListResponse listContacts() {
+        List<ContactResponse> contacts = contactRepository.findAll().stream()
+                .map(ContactResponse::new).toList();
+        return new ContactListResponse(contacts);
     }
 
 }
