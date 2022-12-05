@@ -51,4 +51,12 @@ public class ContactInfoServiceImpl implements ContactInfoService {
         return new ContactResponse(contact.get());
     }
 
+    @Override
+    public void deleteContact(Long id) {
+        boolean exists = contactRepository.existsById(id);
+        if(exists) {
+            contactRepository.deleteById(id);
+        }
+    }
+
 }

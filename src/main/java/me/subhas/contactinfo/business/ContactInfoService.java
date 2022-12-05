@@ -10,4 +10,6 @@ public interface ContactInfoService {
     ContactListResponse listContacts();
 
     ContactResponse retrieveContact(Long id);
+
+    void deleteContact(Long id);
 }
