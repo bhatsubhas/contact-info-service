@@ -13,6 +13,8 @@ import me.subhas.contactinfo.business.exception.DuplicateContactNameException;
 
 @RestControllerAdvice
 public class ContactInfoErrorController {
+    private record ErrorResponse(String errorMessage) {
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
