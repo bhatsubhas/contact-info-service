@@ -8,4 +8,6 @@ public interface ContactInfoService {
     ContactResponse createContact(ContactCreate contactCreate);
 
     ContactListResponse listContacts();
+
+    ContactResponse retrieveContact(Long id);
 }

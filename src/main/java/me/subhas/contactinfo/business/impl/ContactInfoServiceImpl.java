@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import me.subhas.contactinfo.business.ContactInfoService;
+import me.subhas.contactinfo.business.exception.ContactNotFoundException;
 import me.subhas.contactinfo.business.exception.DuplicateContactNameException;
 import me.subhas.contactinfo.business.model.ContactCreate;
 import me.subhas.contactinfo.business.model.ContactListResponse;
@@ -39,6 +40,15 @@ public class ContactInfoServiceImpl implements ContactInfoService {
         List<ContactResponse> contacts = contactRepository.findAll().stream()
                 .map(ContactResponse::new).toList();
         return new ContactListResponse(contacts);
+    }
+
+    @Override
+    public ContactResponse retrieveContact(Long id) {
+        Optional<Contact> contact = contactRepository.findById(id);
+        if(contact.isEmpty()) {
+            throw new ContactNotFoundException(String.format("Could not find contact with id '%d'", id));
+        }
+        return new ContactResponse(contact.get());
     }
 
 }
