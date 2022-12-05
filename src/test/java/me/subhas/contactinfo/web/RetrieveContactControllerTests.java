@@ -1,5 +1,7 @@
 package me.subhas.contactinfo.web;
 
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -71,7 +73,10 @@ class RetrieveContactControllerTests {
         String id = "abc";
         mockMvc.perform(get(String.format("/api/v1/contacts/%s", id)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorMessage").value(String.format("'id' must be a valid number, provided '%s'", id)))
+                .andExpect(jsonPath("$.errorMessage")
+                        .value(String.format("'id' must be a valid number, provided '%s'", id)))
                 .andDo(print());
+
+        verify(contactInfoService, times(0)).retrieveContact(anyLong());
     }
 }
