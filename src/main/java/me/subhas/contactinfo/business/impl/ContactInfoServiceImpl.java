@@ -1,16 +1,19 @@
 package me.subhas.contactinfo.business.impl;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import jakarta.transaction.Transactional;
 import me.subhas.contactinfo.business.ContactInfoService;
 import me.subhas.contactinfo.business.exception.ContactNotFoundException;
 import me.subhas.contactinfo.business.exception.DuplicateContactNameException;
 import me.subhas.contactinfo.business.model.ContactCreate;
 import me.subhas.contactinfo.business.model.ContactListResponse;
 import me.subhas.contactinfo.business.model.ContactResponse;
+import me.subhas.contactinfo.business.model.ContactUpdate;
 import me.subhas.contactinfo.data.ContactRepository;
 import me.subhas.contactinfo.data.entity.Contact;
 
@@ -44,11 +47,8 @@ public class ContactInfoServiceImpl implements ContactInfoService {
 
     @Override
     public ContactResponse retrieveContact(Long id) {
-        Optional<Contact> contact = contactRepository.findById(id);
-        if(contact.isEmpty()) {
-            throw new ContactNotFoundException(String.format("Could not find contact with id '%d'", id));
-        }
-        return new ContactResponse(contact.get());
+        Contact contact = getContact(id);
+        return new ContactResponse(contact);
     }
 
     @Override
@@ -59,4 +59,32 @@ public class ContactInfoServiceImpl implements ContactInfoService {
         }
     }
 
+    @Override
+    @Transactional
+    public ContactResponse updateContact(Long id, ContactUpdate update) {
+        Contact contact = getContact(id);
+        if(isUpdatable(update.name())) {
+            contact.setName(update.name());
+        }
+        if(isUpdatable(update.email())) {
+            contact.setEmail(update.email());
+        }
+        ;
+        if(isUpdatable(update.phone())) {
+            contact.setPhone(update.phone());
+        }
+        return new ContactResponse(contact);
+    }
+
+    private boolean isUpdatable(String value) {
+        return Objects.nonNull(value) && !value.isBlank();
+    }
+
+    private Contact getContact(Long id) {
+        Optional<Contact> contact = contactRepository.findById(id);
+        if(contact.isEmpty()) {
+            throw new ContactNotFoundException(String.format("Could not find contact with id '%d'", id));
+        }
+        return contact.get();
+    }
 }
