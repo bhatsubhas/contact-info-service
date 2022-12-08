@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import me.subhas.contactinfo.business.exception.DuplicateContactNameException;
 import me.subhas.contactinfo.business.impl.ContactInfoServiceImpl;
 import me.subhas.contactinfo.business.model.ContactResponse;
 import me.subhas.contactinfo.business.model.ContactUpdate;
@@ -95,5 +96,35 @@ class UpdateContactControllerTests {
                 .andDo(print());
 
         verify(contactInfoService).updateContact(anyLong(), any(ContactUpdate.class));
+    }
+
+    @Test
+    @DisplayName("Error message when name you want to update is already taken")
+    void testErrorWhenUpdateNameIsAlreadyTaken() throws Exception {
+        Long id = 343L;
+        String name = "Abc Xyz";
+        String email = "abc.xyz@gmail.com";
+        String phone = "123456";
+
+        String errorMessage = String.format("Contact with with name '%s' already used", name);
+        when(contactInfoService.updateContact(anyLong(), any(ContactUpdate.class)))
+                .thenThrow(new DuplicateContactNameException(errorMessage));
+
+        StringBuilder requestBodyBuilder = new StringBuilder();
+        requestBodyBuilder.append("{ ");
+        requestBodyBuilder.append("\"name\":").append("\"").append(name).append("\",");
+        requestBodyBuilder.append("\"email\":").append("\"").append(email).append("\",");
+        requestBodyBuilder.append("\"phone\":").append("\"").append(phone).append("\"");
+        requestBodyBuilder.append(" }");
+
+        mockMvc.perform(put(String.format("/api/v1/contacts/%d", id)).contentType(APPLICATION_JSON)
+                .content(requestBodyBuilder.toString()))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorMessage")
+                        .value(errorMessage))
+                .andDo(print());
+
+        verify(contactInfoService).updateContact(anyLong(), any(ContactUpdate.class));
+
     }
 }

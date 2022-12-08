@@ -28,12 +28,7 @@ public class ContactInfoServiceImpl implements ContactInfoService {
 
     @Override
     public ContactResponse createContact(ContactCreate contactCreate) {
-        String name = contactCreate.name();
-        Optional<Contact> existingContact = contactRepository.findByName(name);
-        if (existingContact.isPresent()) {
-            throw new DuplicateContactNameException(
-                    String.format("Contact with with name '%s' already present", name));
-        }
+        checkDuplicateNameForCreate(contactCreate.name());
         Contact contact = contactRepository.save(contactCreate.toContactEntity());
         return new ContactResponse(contact);
     }
@@ -54,7 +49,7 @@ public class ContactInfoServiceImpl implements ContactInfoService {
     @Override
     public void deleteContact(Long id) {
         boolean exists = contactRepository.existsById(id);
-        if(exists) {
+        if (exists) {
             contactRepository.deleteById(id);
         }
     }
@@ -62,27 +57,46 @@ public class ContactInfoServiceImpl implements ContactInfoService {
     @Override
     @Transactional
     public ContactResponse updateContact(Long id, ContactUpdate update) {
+        checkDuplicateNameForUpdate(update.name(), id);
         Contact contact = getContact(id);
-        if(isUpdatable(update.name())) {
+        if (isUpdatable(update.name(), contact.getName())) {
             contact.setName(update.name());
         }
-        if(isUpdatable(update.email())) {
+        if (isUpdatable(update.email(), contact.getEmail())) {
             contact.setEmail(update.email());
         }
         ;
-        if(isUpdatable(update.phone())) {
+        if (isUpdatable(update.phone(), contact.getPhone())) {
             contact.setPhone(update.phone());
         }
         return new ContactResponse(contact);
     }
 
-    private boolean isUpdatable(String value) {
-        return Objects.nonNull(value) && !value.isBlank();
+    private void checkDuplicateNameForCreate(String name) {
+        Optional<Contact> existingContact = contactRepository.findByName(name);
+        if (existingContact.isPresent()) {
+            throw new DuplicateContactNameException(
+                    String.format("Contact with with name '%s' already present", name));
+        }
+    }
+
+    private void checkDuplicateNameForUpdate(String name, Long updateContactId) {
+        Optional<Contact> existingContact = contactRepository.findByName(name);
+        existingContact.ifPresent(contact -> {
+            if (!contact.getId().equals(updateContactId)) {
+                throw new DuplicateContactNameException(
+                        String.format("Contact with with name '%s' already used", name));
+            }
+        });
+    }
+
+    private boolean isUpdatable(String newValue, String oldValue) {
+        return Objects.nonNull(newValue) && !newValue.isBlank() && !newValue.equals(oldValue);
     }
 
     private Contact getContact(Long id) {
         Optional<Contact> contact = contactRepository.findById(id);
-        if(contact.isEmpty()) {
+        if (contact.isEmpty()) {
             throw new ContactNotFoundException(String.format("Could not find contact with id '%d'", id));
         }
         return contact.get();

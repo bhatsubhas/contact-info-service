@@ -2,6 +2,9 @@ package me.subhas.contactinfo.business;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -16,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import me.subhas.contactinfo.business.exception.ContactNotFoundException;
+import me.subhas.contactinfo.business.exception.DuplicateContactNameException;
 import me.subhas.contactinfo.business.impl.ContactInfoServiceImpl;
 import me.subhas.contactinfo.business.model.ContactResponse;
 import me.subhas.contactinfo.business.model.ContactUpdate;
@@ -149,5 +153,61 @@ class UpdateContactServiceTests {
         verify(contactRepository).findById(id);
     }
 
+    @Test
+    @DisplayName("Throw exception when name to be udpated is already used")
+    void testThrowsExceptionWhenUpdateNameIsAlreadyUsed() {
+        Long existingId = 345L;
+        String name = "Abc Xyz";
+        String email = "xyz.abc@gmail.com";
+        String phone = "98765432";
+        Contact contact = new Contact(existingId, name, email, phone);
+
+        Long updateId = 343L;
+        String updateName = "Abc Xyz";
+        ContactUpdate update = new ContactUpdate(updateName, null, null);
+        when(contactRepository.findByName(updateName)).thenReturn(Optional.of(contact));
+
+        String exceptionMessage = assertThrows(DuplicateContactNameException.class,
+                () -> contactInfoService.updateContact(updateId, update)).getMessage();
+
+        assertEquals(String.format("Contact with with name '%s' already used", updateName), exceptionMessage);
+
+        verify(contactRepository).findByName(updateName);
+        verify(contactRepository, times(0)).findById(updateId);
+
+    }
+
+    @Test
+    @DisplayName("Nothing will be updated when Name, Email and Phone Number are same as before")
+    void testNothingToUpdateWhenSameNameEmailAndPhoneIsPassed() {
+        Long id = 345L;
+        String name = "Xyz Abc";
+        String email = "xyz.abc@gmail.com";
+        String phone = "98765432";
+        Contact contact = mock(Contact.class);
+        when(contact.getId()).thenReturn(id);
+        when(contact.getName()).thenReturn(name);
+        when(contact.getEmail()).thenReturn(email);
+        when(contact.getPhone()).thenReturn(phone);
+        when(contactRepository.findByName(name)).thenReturn(Optional.of(contact));
+        when(contactRepository.findById(id)).thenReturn(Optional.of(contact));
+
+        ContactUpdate update = new ContactUpdate(name, email, phone);
+
+        ContactResponse response = contactInfoService.updateContact(id, update);
+
+        assertEquals(id, response.id());
+        assertEquals(name, response.name());
+        assertEquals(email, response.email());
+        assertEquals(phone, response.phone());
+
+        verify(contactRepository).findById(id);
+        verify(contact, times(2)).getName();
+        verify(contact, times(2)).getEmail();
+        verify(contact, times(2)).getPhone();
+        verify(contact, times(0)).setName(anyString());
+        verify(contact, times(0)).setEmail(anyString());
+        verify(contact, times(0)).setPhone(anyString());
+    }
 
 }
