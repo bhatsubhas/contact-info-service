@@ -10,5 +10,4 @@ import me.subhas.contactinfo.data.entity.Contact;
 @Repository
 public interface ContactRepository extends JpaRepository<Contact, Long> {
     Optional<Contact> findByName(String name);
-
 }

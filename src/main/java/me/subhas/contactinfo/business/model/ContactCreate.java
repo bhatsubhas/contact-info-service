@@ -6,11 +6,6 @@ import me.subhas.contactinfo.data.entity.Contact;
 public record ContactCreate(@NotNull(message = "'name' field is mandatory") String name, String email,
         @NotNull(message = "'phone' field is mandatory") String phone) {
     public Contact toContactEntity() {
-        Contact contact = new Contact();
-        contact.setName(name);
-        contact.setEmail(email);
-        contact.setPhone(phone);
-        return contact;
+        return new Contact(name, email, phone);
     }
-
 }

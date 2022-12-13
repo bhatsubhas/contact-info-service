@@ -27,6 +27,17 @@ dependencies {
 
 jacocoTestReport {
 	dependsOn test
+	afterEvaluate {
+		classDirectories.from = files(classDirectories.files.collect {
+				fileTree(dir: it,
+			        include: [
+						'me/subhas/contactinfo/business/**',
+						'me/subhas/contactinfo/data/**',
+						'me/subhas/contactinfo/web/**',
+					]
+				)
+        })
+	}
 }
 
 test {
