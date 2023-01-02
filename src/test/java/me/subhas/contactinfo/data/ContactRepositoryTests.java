@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import me.subhas.contactinfo.data.entity.Contact;
 
@@ -55,5 +57,39 @@ class ContactRepositoryTests {
         assertEquals(savedContact.getName(), contact.getName());
         assertEquals(savedContact.getEmail(), contact.getEmail());
         assertEquals(savedContact.getPhone(), contact.getPhone());
+    }
+
+    @Test
+    @DisplayName("Repository returns Contacts of specified page no. and page size.")
+    void testFindByPage_returnsContacts() {
+        entityManager.persistFlushFind(new Contact("Abc U", "abc.u@gmail.com", "123456"));
+        entityManager.persistFlushFind(new Contact("Bcd V", "bcd.v@gmail.com", "123457"));
+        entityManager.persistFlushFind(new Contact("Cde W", "cde.w@gmail.com", "123458"));
+        entityManager.persistFlushFind(new Contact("Def X", "def.x@gmail.com", "123459"));
+        entityManager.persistFlushFind(new Contact("Efg Y", "efg.y@gmail.com", "123450"));
+        entityManager.persistFlushFind(new Contact("Fgh U", "fgh.u@gmail.com", "123451"));
+        entityManager.persistFlushFind(new Contact("Ghi V", "ghi.v@gmail.com", "123452"));
+        entityManager.persistFlushFind(new Contact("Hij W", "hij.w@gmail.com", "123453"));
+        entityManager.persistFlushFind(new Contact("Ijk X", "ijk.x@gmail.com", "123454"));
+        entityManager.persistFlushFind(new Contact("Jkl Y", "jkl.y@gmail.com", "123455"));
+
+        int pageNumber = 0;
+        int pageSize = 7;
+        PageRequest pageRequest = PageRequest.of(pageNumber,pageSize);
+        Page<Contact> page = contactRepository.findAll(pageRequest);
+        assertEquals(pageNumber, page.getNumber());
+        assertEquals(pageSize, page.getContent().size());
+
+        pageNumber = 1;
+        pageRequest = PageRequest.of(pageNumber,pageSize);
+        page = contactRepository.findAll(pageRequest);
+        assertEquals(pageNumber, page.getNumber());
+        assertEquals(3, page.getContent().size());
+
+        pageNumber = 2;
+        pageRequest = PageRequest.of(pageNumber,pageSize);
+        page = contactRepository.findAll(pageRequest);
+        assertEquals(pageNumber, page.getNumber());
+        assertEquals(0, page.getContent().size());
     }
 }

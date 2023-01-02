@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -34,10 +36,11 @@ public class ContactInfoServiceImpl implements ContactInfoService {
     }
 
     @Override
-    public ContactListResponse listContacts() {
-        List<ContactResponse> contacts = contactRepository.findAll().stream()
-                .map(ContactResponse::new).toList();
-        return new ContactListResponse(contacts);
+    public ContactListResponse listContacts(Integer pageNo, Integer pageSize) {
+        PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
+        Page<Contact> pageContact = contactRepository.findAll(pageRequest);
+        List<ContactResponse> contacts = pageContact.getContent().stream().map(ContactResponse::new).toList();
+        return new ContactListResponse(contacts, pageContact.getNumber(), pageContact.getSize());
     }
 
     @Override

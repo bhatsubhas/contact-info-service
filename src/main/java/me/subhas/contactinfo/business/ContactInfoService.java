@@ -8,7 +8,7 @@ import me.subhas.contactinfo.business.model.ContactUpdate;
 public interface ContactInfoService {
     ContactResponse createContact(ContactCreate contactCreate);
 
-    ContactListResponse listContacts();
+    ContactListResponse listContacts(Integer pageNo, Integer pageSize);
 
     ContactResponse retrieveContact(Long id);
 

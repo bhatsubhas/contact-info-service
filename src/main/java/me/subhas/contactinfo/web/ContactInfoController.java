@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
@@ -34,8 +35,10 @@ public class ContactInfoController {
     }
 
     @GetMapping
-    public ResponseEntity<ContactListResponse> listContacts() {
-        return ResponseEntity.ok().body(contactInfoService.listContacts());
+    public ResponseEntity<ContactListResponse> listContacts(
+            @RequestParam(defaultValue = "1") Integer pageNumber,
+            @RequestParam(defaultValue = "5") Integer pageSize) {
+        return ResponseEntity.ok().body(contactInfoService.listContacts(pageNumber - 1, pageSize));
     }
 
     @GetMapping("/{id}")
