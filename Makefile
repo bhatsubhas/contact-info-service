@@ -19,3 +19,6 @@ logs:
 
 stop:
 	docker container stop $(image_name)
+
+prune:
+	docker image prune -f
