@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,8 @@ import me.subhas.contactinfo.data.entity.Contact;
 @Service
 public class ContactInfoServiceImpl implements ContactInfoService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ContactInfoServiceImpl.class);
+
     private ContactRepository contactRepository;
 
     public ContactInfoServiceImpl(ContactRepository contactRepository) {
@@ -30,8 +34,11 @@ public class ContactInfoServiceImpl implements ContactInfoService {
 
     @Override
     public ContactResponse createContact(ContactCreate contactCreate) {
+        var startTime = System.currentTimeMillis();
+        LOGGER.info("Request to create a contact");
         checkDuplicateNameForCreate(contactCreate.name());
         Contact contact = contactRepository.save(contactCreate.toContactEntity());
+        LOGGER.info(String.format("It took %dms to create a contact", System.currentTimeMillis() - startTime));
         return new ContactResponse(contact);
     }
 
