@@ -5,7 +5,11 @@ A microservice to store and manage contact details.
 * Docker
 * make (optional)
 ## Execute unit tests and see the coverage report
-Run the tests using `./gradlew test` command and then fro cod coverage report open **build/reports/jacoco/test/html/index.html** in a browser.
+Run the tests using `./gradlew test`.
+
+For JaCoCo coverage report open **build/reports/jacoco/test/html/index.html** in a browser.
+
+For Test Results open **build/reports/tests/test/index.html** in a browser.
 ## Start the application and access API Documenation
 Run `./gradlew bootRun` command and access API Documentation here: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
 ## Helpful gradle commands
