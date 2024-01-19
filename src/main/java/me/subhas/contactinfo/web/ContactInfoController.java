@@ -1,5 +1,7 @@
 package me.subhas.contactinfo.web;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,13 +24,13 @@ import me.subhas.contactinfo.business.model.ContactUpdate;
 import me.subhas.contactinfo.web.exception.IllegalIdException;
 
 @RestController
-@RequestMapping("/api/v1/contacts")
+@RequestMapping(path = "/api/v1/contacts", produces = APPLICATION_JSON_VALUE)
 public class ContactInfoController {
 
     @Autowired
     private ContactInfoService contactInfoService;
 
-    @PostMapping
+    @PostMapping(consumes = APPLICATION_JSON_VALUE)
     public ResponseEntity<ContactResponse> createContact(@Valid @RequestBody ContactCreate contactCreate) {
         ContactResponse response = contactInfoService.createContact(contactCreate);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
