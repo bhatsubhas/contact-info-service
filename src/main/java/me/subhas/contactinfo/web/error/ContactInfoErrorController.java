@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import me.subhas.contactinfo.business.exception.ContactNotFoundException;
@@ -20,6 +21,7 @@ public class ContactInfoErrorController {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         List<String> validations = ex.getAllErrors().stream().map(ObjectError::getDefaultMessage)
                 .collect(Collectors.toList());
@@ -28,16 +30,19 @@ public class ContactInfoErrorController {
     }
 
     @ExceptionHandler(DuplicateContactNameException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     ResponseEntity<ErrorResponse> handleDuplicateContactNameException(DuplicateContactNameException ex) {
         return ResponseEntity.badRequest().body(new ErrorResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(ContactNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     ResponseEntity<ErrorResponse> handleContactNotFoundException(ContactNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(IllegalIdException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     ResponseEntity<ErrorResponse> handleIllegalIdException(IllegalIdException ex) {
         return ResponseEntity.badRequest().body(new ErrorResponse(ex.getMessage()));
     }
