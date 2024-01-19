@@ -17,6 +17,8 @@ run:
 
 logs:
 	docker container logs -f $(image_name)
+exec:
+	docker container exec -it $(image_name) sh
 
 stop:
 	docker container stop $(image_name)
