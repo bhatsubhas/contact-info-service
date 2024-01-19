@@ -101,7 +101,7 @@ class ListContactsServiceTests {
         when(contactRepository.findAll(any(PageRequest.class))).thenReturn(page);
         ContactListResponse contactListResponse = contactInfoService.listContacts(1, 5);
         assertEquals(5, contactListResponse.contacts().size());
-        assertEquals(0, contactListResponse.pageNumber());
+        assertEquals(1, contactListResponse.pageNumber());
         assertEquals(5, contactListResponse.pageSize());
         for (ContactResponse contactResponse : contactListResponse.contacts()) {
             Contact contact = contacts.get(contactResponse.id().intValue() - 1);

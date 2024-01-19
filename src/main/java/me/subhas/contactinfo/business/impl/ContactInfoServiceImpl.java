@@ -47,7 +47,7 @@ public class ContactInfoServiceImpl implements ContactInfoService {
         PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
         Page<Contact> pageContact = contactRepository.findAll(pageRequest);
         List<ContactResponse> contacts = pageContact.getContent().stream().map(ContactResponse::new).toList();
-        return new ContactListResponse(contacts, pageContact.getNumber(), pageContact.getSize());
+        return new ContactListResponse(contacts, pageContact.getNumber()+1, pageContact.getSize());
     }
 
     @Override
