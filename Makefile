@@ -1,4 +1,3 @@
-.PHONY: build
 SHELL := /bin/bash
 image_name = contact-service
 image_tag = 1.0.0
