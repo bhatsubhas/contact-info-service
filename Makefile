@@ -3,7 +3,16 @@ SHELL := /bin/bash
 image_name = contact-service
 image_tag = 1.0.0
 
-build: Dockerfile
+test:
+	./gradlew test
+
+build_jar:
+	./gradlew build -x test
+
+boot_run:
+	./gradlew bootRun
+
+image: Dockerfile
 	docker image build -t $(image_name):$(image_tag) .
 
 analyze:
@@ -17,11 +26,16 @@ run:
 
 logs:
 	docker container logs -f $(image_name)
+
 exec:
 	docker container exec -it $(image_name) sh
 
 stop:
 	docker container stop $(image_name)
 
-prune:
+clean: 
+	./gradlew clean
+
+purge: clean
 	docker image prune -f
+	docker image rm $(image_name):$(image_tag)
