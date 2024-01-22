@@ -19,7 +19,7 @@ To run the unit tests locally run:
 ```
 To build the jar locally and start the application from jar run:
 ```bash
-./gradlew build -x test
+./gradlew build
 java -jar build/libs/contact-info-service-0.0.1-SNAPSHOT.jar
 ```
 To run the application locally on port `8080` run:
