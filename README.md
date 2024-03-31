@@ -1,5 +1,5 @@
 # Contact-Info-Service
-A microservice to store and manage contact details.
+A micro-service to store and manage contact details.
 ## Requirements:
 * Java 17
 * Docker
@@ -10,7 +10,7 @@ Run the tests using `./gradlew test`.
 For JaCoCo coverage report open **build/reports/jacoco/test/html/index.html** in a browser.
 
 For Test Results open **build/reports/tests/test/index.html** in a browser.
-## Start the application and access API Documenation
+## Start the application and access API Documentation
 Run `./gradlew bootRun` command and access API Documentation here: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
 ## Helpful gradle commands
 To run the unit tests locally run:
