@@ -6,12 +6,16 @@ plugins {
 }
 
 jacoco {
-	toolVersion '0.8.13'
+	toolVersion = '0.8.13'
 }
 
 group = 'me.subhas'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '21'
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_21
+}
+
 
 repositories {
 	mavenCentral()
