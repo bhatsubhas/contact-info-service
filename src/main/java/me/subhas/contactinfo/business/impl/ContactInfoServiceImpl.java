@@ -26,7 +26,7 @@ public class ContactInfoServiceImpl implements ContactInfoService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ContactInfoServiceImpl.class);
 
-    private ContactRepository contactRepository;
+    private final ContactRepository contactRepository;
 
     public ContactInfoServiceImpl(ContactRepository contactRepository) {
         this.contactRepository = contactRepository;
@@ -38,7 +38,7 @@ public class ContactInfoServiceImpl implements ContactInfoService {
         LOGGER.info("Request to create a contact");
         checkDuplicateNameForCreate(contactCreate.name());
         Contact contact = contactRepository.save(contactCreate.toContactEntity());
-        LOGGER.info(String.format("It took %dms to create a contact", System.currentTimeMillis() - startTime));
+        LOGGER.info("It took {}ms to create a contact", System.currentTimeMillis() - startTime);
         return new ContactResponse(contact);
     }
 
@@ -75,7 +75,6 @@ public class ContactInfoServiceImpl implements ContactInfoService {
         if (isUpdatable(update.email(), contact.getEmail())) {
             contact.setEmail(update.email());
         }
-        ;
         if (isUpdatable(update.phone(), contact.getPhone())) {
             contact.setPhone(update.phone());
         }
