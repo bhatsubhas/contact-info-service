@@ -38,3 +38,6 @@ clean:
 purge: clean
 	docker image prune -f
 	docker image rm $(image_name):$(image_tag)
+
+push_sbom:
+	./push_sbom.sh
